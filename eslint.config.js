@@ -6,7 +6,8 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 
 // ESLint（コードの書き方チェック）の設定。TypeScript + React 向け。
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'coverage'] },
+  // dist 等に加え、macOS が外部ボリューム上に作る ._ メタデータファイルも対象外にする。
+  { ignores: ['dist', 'node_modules', 'coverage', '**/._*'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],

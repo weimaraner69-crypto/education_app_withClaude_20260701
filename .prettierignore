@@ -1,3 +1,19 @@
 dist
 node_modules
 coverage
+
+# dev-orchestration-template のひな形・ドキュメント類
+# （アプリの TypeScript コードではないため、Prettier の整形対象外とする）
+.claude/
+.github/
+.serena/
+.vscode/
+agents/
+docs/
+notebooks/
+CLAUDE.md
+MiraStudy_仕様書_v4.4.md
+PLAN.md
+project-config.yml
+pyproject.toml.template
+.template-update.yml
