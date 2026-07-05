@@ -19,7 +19,12 @@ export default function UnitPicker({ units, onSelect }: UnitPickerProps) {
       <p className="login-lead">どの単元をべんきょうする？</p>
       <div className="unit-grid">
         {units.map((unit) => (
-          <button key={unit.id} className="unit-button" onClick={() => onSelect(unit)}>
+          <button
+            key={unit.id}
+            type="button"
+            className="unit-button"
+            onClick={() => onSelect(unit)}
+          >
             {unit.icon && <span className="unit-icon">{unit.icon}</span>}
             <span className="unit-name">{unit.name}</span>
           </button>

@@ -29,7 +29,7 @@ export default function Home({ user, onLogout }: HomeProps) {
             // 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする
             (gradeLabel(user.gradeId) ? ` さん（${gradeLabel(user.gradeId)}）` : ' さん')}
         </span>
-        <button className="parent-link" onClick={onLogout}>
+        <button type="button" className="parent-link" onClick={onLogout}>
           ログアウト
         </button>
       </div>
@@ -40,7 +40,7 @@ export default function Home({ user, onLogout }: HomeProps) {
           <div>
             <p className="login-lead">{selectedUnit.name}</p>
             <p>この単元の問題は、次のステップ（タスク2-3）で作ります。</p>
-            <button className="parent-link" onClick={() => setSelectedUnit(null)}>
+            <button type="button" className="parent-link" onClick={() => setSelectedUnit(null)}>
               ← 単元えらびにもどる
             </button>
           </div>
