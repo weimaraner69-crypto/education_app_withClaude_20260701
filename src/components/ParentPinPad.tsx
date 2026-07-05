@@ -33,16 +33,26 @@ export default function ParentPinPad({ pinHash, onSuccess, onBack }: ParentPinPa
   useEffect(() => {
     if (pin.length !== PIN_LENGTH) return;
     let cancelled = false;
-    void verifyPin(pin, pinHash).then((ok) => {
-      if (cancelled) return;
-      if (ok) {
-        onSuccess();
-      } else {
-        // 間違いのときは印を出して入力をクリアする。
-        setError(true);
-        setPin('');
+
+    async function check() {
+      try {
+        const ok = await verifyPin(pin, pinHash);
+        if (cancelled) return;
+        if (ok) {
+          onSuccess();
+          return;
+        }
+      } catch {
+        // 照合に失敗（Web Crypto が使えない環境など）したときも、
+        // 未処理のエラーにせず、下と同じ「間違い」の見せ方に落とす。
+        if (cancelled) return;
       }
-    });
+      // 不一致・失敗のとき：印を出して入力をクリアする。
+      setError(true);
+      setPin('');
+    }
+
+    void check();
     return () => {
       cancelled = true;
     };
@@ -52,13 +62,25 @@ export default function ParentPinPad({ pinHash, onSuccess, onBack }: ParentPinPa
     <div>
       <p className="login-lead">あんしょうばんごう（4けた）</p>
 
-      {/* 入力済みの桁を ● で表す */}
-      <div className={`pin-dots${error ? ' pin-dots--error' : ''}`}>
+      {/* 入力済みの桁を ● で表す（見た目だけ。読み上げは下の status で伝える） */}
+      <div className={`pin-dots${error ? ' pin-dots--error' : ''}`} aria-hidden="true">
         {Array.from({ length: PIN_LENGTH }, (_, i) => (
           <span key={i} className={`pin-dot${i < pin.length ? ' pin-dot--filled' : ''}`} />
         ))}
       </div>
-      {error && <p className="pin-error">ばんごうがちがいます</p>}
+
+      {/* スクリーンリーダー向けの読み上げ用（画面には見えない）。
+          何桁入力したか・間違いかを音声で伝える。 */}
+      <span className="sr-only" role="status" aria-live="polite">
+        {error ? 'ばんごうがちがいます' : `${pin.length} / ${PIN_LENGTH} けた にゅうりょくしました`}
+      </span>
+
+      {/* 目に見えるエラー表示。読み上げは上の status が担当するので aria-hidden。 */}
+      {error && (
+        <p className="pin-error" aria-hidden="true">
+          ばんごうがちがいます
+        </p>
+      )}
 
       <div className="pin-pad">
         {KEYS.map((k) => (

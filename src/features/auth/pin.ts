@@ -8,6 +8,15 @@
 
 /** PIN文字列を SHA-256 の16進文字列（64文字）に変換する。 */
 export async function hashPin(pin: string): Promise<string> {
+  // Web Crypto（crypto.subtle）は HTTPS か localhost でしか使えない。
+  // 使えない環境では「undefined を読もうとした」という分かりにくい例外になるので、
+  // 先に確認して、原因が分かるはっきりしたエラーで止める。
+  if (!globalThis.crypto?.subtle) {
+    throw new Error(
+      'この環境では暗号化機能（Web Crypto）が使えないため、PINを照合できません。' +
+        'HTTPS または localhost で開いているか確認してください。',
+    );
+  }
   const data = new TextEncoder().encode(pin);
   const digest = await crypto.subtle.digest('SHA-256', data);
   // バイト列を16進数の文字列に並べ直す（例: 0a1b2c...）
