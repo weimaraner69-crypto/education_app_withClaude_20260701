@@ -40,7 +40,7 @@ export default function LoginScreen({ onLogin }: LoginScreenProps) {
           // 保護者データが無い（万一の設定漏れ）ときの保険。子供画面へ戻すボタンを出す。
           <div>
             <p className="login-lead">保護者データが見つかりません</p>
-            <button className="parent-link" onClick={() => setMode('children')}>
+            <button type="button" className="parent-link" onClick={() => setMode('children')}>
               もどる
             </button>
           </div>

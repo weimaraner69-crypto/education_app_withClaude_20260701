@@ -18,7 +18,12 @@ export default function ChildPicker({ childUsers, onPick, onParentTap }: ChildPi
         {childUsers.map((child) => {
           const grade = gradeLabel(child.gradeId);
           return (
-            <button key={child.id} className="child-button" onClick={() => onPick(child)}>
+            <button
+              key={child.id}
+              type="button"
+              className="child-button"
+              onClick={() => onPick(child)}
+            >
               <span className="child-avatar">{child.avatar}</span>
               <span className="child-name">{child.displayName}</span>
               {/* 学年が分かるときだけ表示（空欄の行が出ないように） */}
@@ -27,7 +32,7 @@ export default function ChildPicker({ childUsers, onPick, onParentTap }: ChildPi
           );
         })}
       </div>
-      <button className="parent-link" onClick={onParentTap}>
+      <button type="button" className="parent-link" onClick={onParentTap}>
         🔑 おうちのひと（せってい）
       </button>
     </div>
