@@ -19,15 +19,16 @@ export default function Home({ user, onLogout }: HomeProps) {
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   const units = user.role === 'child' ? unitsForGrade(user.gradeId) : [];
+  // 子供のときだけ学年ラベルを1回だけ求めておき、表示で使い回す。
+  const grade = user.role === 'child' ? gradeLabel(user.gradeId) : '';
 
   return (
     <main>
       <div className="home-header">
         <span>
           {user.avatar} {user.displayName}
-          {user.role === 'child' &&
-            // 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする
-            (gradeLabel(user.gradeId) ? ` さん（${gradeLabel(user.gradeId)}）` : ' さん')}
+          {/* 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする */}
+          {user.role === 'child' && (grade ? ` さん（${grade}）` : ' さん')}
         </span>
         <button type="button" className="parent-link" onClick={onLogout}>
           ログアウト
