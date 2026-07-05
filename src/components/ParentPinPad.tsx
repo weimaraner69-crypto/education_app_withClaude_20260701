@@ -84,17 +84,17 @@ export default function ParentPinPad({ pinHash, onSuccess, onBack }: ParentPinPa
 
       <div className="pin-pad">
         {KEYS.map((k) => (
-          <button key={k} className="pin-key" onClick={() => pushDigit(k)}>
+          <button key={k} type="button" className="pin-key" onClick={() => pushDigit(k)}>
             {k}
           </button>
         ))}
-        <button className="pin-key pin-key--sub" onClick={clearPin}>
+        <button type="button" className="pin-key pin-key--sub" onClick={clearPin}>
           けす
         </button>
-        <button className="pin-key" onClick={() => pushDigit('0')}>
+        <button type="button" className="pin-key" onClick={() => pushDigit('0')}>
           0
         </button>
-        <button className="pin-key pin-key--sub" onClick={onBack}>
+        <button type="button" className="pin-key pin-key--sub" onClick={onBack}>
           もどる
         </button>
       </div>
