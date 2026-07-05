@@ -21,7 +21,9 @@ export default function Home({ user, onLogout }: HomeProps) {
       <div className="home-header">
         <span>
           {user.avatar} {user.displayName}
-          {user.role === 'child' && ` さん（${gradeLabel(user.gradeId)}）`}
+          {user.role === 'child' &&
+            // 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする
+            (gradeLabel(user.gradeId) ? ` さん（${gradeLabel(user.gradeId)}）` : ' さん')}
         </span>
         <button className="parent-link" onClick={onLogout}>
           ログアウト

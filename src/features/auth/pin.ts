@@ -13,12 +13,13 @@ export async function hashPin(pin: string): Promise<string> {
   // 先に確認して、原因が分かるはっきりしたエラーで止める。
   if (!globalThis.crypto?.subtle) {
     throw new Error(
-      'この環境では暗号化機能（Web Crypto）が使えないため、PINを照合できません。' +
+      'この環境では暗号化機能（Web Crypto）が使えないため、PINを照合できません。 ' +
         'HTTPS または localhost で開いているか確認してください。',
     );
   }
   const data = new TextEncoder().encode(pin);
-  const digest = await crypto.subtle.digest('SHA-256', data);
+  // チェックと同じ globalThis.crypto を参照して、環境差でズレないようにする。
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', data);
   // バイト列を16進数の文字列に並べ直す（例: 0a1b2c...）
   return Array.from(new Uint8Array(digest))
     .map((b) => b.toString(16).padStart(2, '0'))

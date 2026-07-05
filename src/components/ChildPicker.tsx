@@ -15,13 +15,17 @@ export default function ChildPicker({ childUsers, onPick, onParentTap }: ChildPi
     <div>
       <p className="login-lead">だれがべんきょうする？</p>
       <div className="child-grid">
-        {childUsers.map((child) => (
-          <button key={child.id} className="child-button" onClick={() => onPick(child)}>
-            <span className="child-avatar">{child.avatar}</span>
-            <span className="child-name">{child.displayName}</span>
-            <span className="child-grade">{gradeLabel(child.gradeId)}</span>
-          </button>
-        ))}
+        {childUsers.map((child) => {
+          const grade = gradeLabel(child.gradeId);
+          return (
+            <button key={child.id} className="child-button" onClick={() => onPick(child)}>
+              <span className="child-avatar">{child.avatar}</span>
+              <span className="child-name">{child.displayName}</span>
+              {/* 学年が分かるときだけ表示（空欄の行が出ないように） */}
+              {grade && <span className="child-grade">{grade}</span>}
+            </button>
+          );
+        })}
       </div>
       <button className="parent-link" onClick={onParentTap}>
         🔑 おうちのひと（せってい）
