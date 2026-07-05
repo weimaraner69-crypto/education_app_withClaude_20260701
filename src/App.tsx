@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import { generateProblem } from './lib/templateEngine';
-import type { Problem } from './types/problem';
+import type { AppUser } from './types/user';
+import LoginScreen from './components/LoginScreen';
+import Home from './components/Home';
 
-// 土台の動作確認用のかんたんな画面（PLAN タスク2-3の骨組み）。
-// 「次の問題」を押すたびに、かけ算テンプレートが新しい問題を作って表示する。
-// 本格的な出題・採点・ヒント画面は、このあとのタスクで作り込んでいく。
+// アプリの一番外側。ログインしているかどうかで画面を切り替える（PLAN タスク2-1）。
+// ・まだログインしていない → ログイン画面（名前タップ／保護者PIN）
+// ・ログイン済み           → ホーム画面
+// いまは「今ログインしている人」をこの場所（メモリ）だけで覚えている。
+// 画面を再読み込みすると忘れる。ログイン状態の保存は、あとのタスクで作る。
 export default function App() {
-  const [problem, setProblem] = useState<Problem>(() => generateProblem('mul'));
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
 
-  return (
-    <main>
-      <h1>MiraStudy</h1>
-      <p>土台の動作確認（かけ算テンプレート）</p>
-      <p className="problem">{problem.prompt}</p>
-      <button onClick={() => setProblem(generateProblem('mul'))}>次の問題</button>
-    </main>
-  );
+  if (!currentUser) {
+    return <LoginScreen onLogin={setCurrentUser} />;
+  }
+
+  return <Home user={currentUser} onLogout={() => setCurrentUser(null)} />;
 }
