@@ -34,6 +34,7 @@ export const SEED_UNITS: Unit[] = [
     name: '円の面積',
     order: 3,
     icon: '⭕',
+    generatorKey: 'circle-area', // この単元はテンプレートで出題できる（タスク2-3）
   },
   {
     id: 'elem6-cases-symmetry',

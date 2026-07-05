@@ -4,6 +4,7 @@ import type { Unit } from '../types/unit';
 import { gradeLabel } from '../lib/grades';
 import { unitsForGrade } from '../features/units/seedUnits';
 import UnitPicker from './UnitPicker';
+import QuizScreen from './QuizScreen';
 
 // ログイン後のホーム画面。
 // ・子供 … 学年に合った「単元えらび」を表示（タスク2-2）。単元を選ぶと、その単元の
@@ -37,14 +38,23 @@ export default function Home({ user, onLogout }: HomeProps) {
 
       {user.role === 'child' ? (
         selectedUnit ? (
-          // 単元を選んだあとの画面（出題は次のタスクで作るので、今は案内だけ）
-          <div>
-            <p className="login-lead">{selectedUnit.name}</p>
-            <p>この単元の問題は、次のステップ（タスク2-3）で作ります。</p>
-            <button type="button" className="parent-link" onClick={() => setSelectedUnit(null)}>
-              ← 単元えらびにもどる
-            </button>
-          </div>
+          selectedUnit.generatorKey ? (
+            // テンプレートがある単元 → 出題画面へ
+            <QuizScreen
+              unitName={selectedUnit.name}
+              generatorKey={selectedUnit.generatorKey}
+              onBack={() => setSelectedUnit(null)}
+            />
+          ) : (
+            // まだテンプレートが無い単元は「準備中」の案内（テンプレート追加はタスク2-4）
+            <div>
+              <p className="login-lead">{selectedUnit.name}</p>
+              <p>この単元の問題は、これから追加します（もう少し待っててね）。</p>
+              <button type="button" className="parent-link" onClick={() => setSelectedUnit(null)}>
+                ← 単元えらびにもどる
+              </button>
+            </div>
+          )
         ) : (
           <UnitPicker units={units} onSelect={setSelectedUnit} />
         )
