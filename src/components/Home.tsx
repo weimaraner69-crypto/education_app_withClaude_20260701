@@ -1,41 +1,53 @@
 import { useState } from 'react';
 import type { AppUser } from '../types/user';
+import type { Unit } from '../types/unit';
 import { gradeLabel } from '../lib/grades';
-import { generateProblem } from '../lib/templateEngine';
-import type { Problem } from '../types/problem';
+import { unitsForGrade } from '../features/units/seedUnits';
+import UnitPicker from './UnitPicker';
 
-// ログイン後の仮ホーム画面。
-// 本格的な「単元えらび（タスク2-2）」や「保護者ダッシュボード（タスク3-1）」は
-// このあと作る。今はログインが正しく動くことを確かめるための、簡単な受け皿。
+// ログイン後のホーム画面。
+// ・子供 … 学年に合った「単元えらび」を表示（タスク2-2）。単元を選ぶと、その単元の
+//          出題画面に進む予定（出題そのものはタスク2-3以降で作る）。
+// ・保護者 … 管理メニュー（ダッシュボードはタスク3-1で作る）。
 interface HomeProps {
   user: AppUser;
   onLogout: () => void;
 }
 
 export default function Home({ user, onLogout }: HomeProps) {
-  // 子供ログインの動作確認用に、これまでのかけ算テンプレートも残しておく。
-  const [problem, setProblem] = useState<Problem>(() => generateProblem('mul'));
+  // いま選んでいる単元。null なら単元えらびの画面を出す。
+  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+
+  const units = user.role === 'child' ? unitsForGrade(user.gradeId) : [];
+  // 子供のときだけ学年ラベルを1回だけ求めておき、表示で使い回す。
+  const grade = user.role === 'child' ? gradeLabel(user.gradeId) : '';
 
   return (
     <main>
       <div className="home-header">
         <span>
           {user.avatar} {user.displayName}
-          {user.role === 'child' &&
-            // 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする
-            (gradeLabel(user.gradeId) ? ` さん（${gradeLabel(user.gradeId)}）` : ' さん')}
+          {/* 学年が分かるときは「さん（小6）」、分からないときは「さん」だけにする */}
+          {user.role === 'child' && (grade ? ` さん（${grade}）` : ' さん')}
         </span>
-        <button className="parent-link" onClick={onLogout}>
+        <button type="button" className="parent-link" onClick={onLogout}>
           ログアウト
         </button>
       </div>
 
       {user.role === 'child' ? (
-        <>
-          <p>ようこそ！ここに「単元えらび」がならびます（次のステップで作ります）。</p>
-          <p className="problem">{problem.prompt}</p>
-          <button onClick={() => setProblem(generateProblem('mul'))}>次の問題</button>
-        </>
+        selectedUnit ? (
+          // 単元を選んだあとの画面（出題は次のタスクで作るので、今は案内だけ）
+          <div>
+            <p className="login-lead">{selectedUnit.name}</p>
+            <p>この単元の問題は、次のステップ（タスク2-3）で作ります。</p>
+            <button type="button" className="parent-link" onClick={() => setSelectedUnit(null)}>
+              ← 単元えらびにもどる
+            </button>
+          </div>
+        ) : (
+          <UnitPicker units={units} onSelect={setSelectedUnit} />
+        )
       ) : (
         <p>保護者メニューです。学習状況をまとめる管理画面は、次のステップで作ります。</p>
       )}

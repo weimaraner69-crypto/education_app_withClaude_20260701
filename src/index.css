@@ -147,6 +147,41 @@ button {
   border-color: #bcd;
 }
 
+/* ===== 単元えらび（タスク2-2） ===== */
+
+.unit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.unit-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.2rem 0.6rem;
+  min-height: 6rem;
+  background: #fff;
+  border: 3px solid #4a7;
+}
+
+.unit-icon {
+  font-size: 2.4rem;
+  line-height: 1;
+}
+
+.unit-name {
+  font-size: 1.15rem;
+  font-weight: bold;
+}
+
+.unit-empty {
+  margin: 2rem 0;
+  color: #567;
+}
+
 /* ===== ログイン後ホームの上部バー ===== */
 
 .home-header {
