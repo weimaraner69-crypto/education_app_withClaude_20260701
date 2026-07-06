@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
@@ -31,7 +31,9 @@ function formatAnswer(answer: Answer): string {
   }
 }
 
-type Status = 'answering' | 'correct' | 'revealed';
+// 出題中の状態。'seeAnswer' は「答えを見る」を押したときだけ使う。
+// （4回まちがえたときの正解表示は、下で wrongCount から直接みちびく）
+type Status = 'answering' | 'correct' | 'seeAnswer';
 
 export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScreenProps) {
   const [problem, setProblem] = useState<Problem>(() => generateProblem(generatorKey));
@@ -39,10 +41,13 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   const [status, setStatus] = useState<Status>('answering');
   const [wrongCount, setWrongCount] = useState(0); // この問題でまちがえた回数
 
-  // 答え合わせ済み（正解 or 答えを見た）なら、入力・再採点はできないようにする
-  const answered = status !== 'answering';
-  // まちがえた回数に応じて、見せるヒント数と「正解を明かすか」を決める（仕様書4-1a）
-  const { visibleHints } = hintProgress(wrongCount);
+  // まちがえた回数から、見せるヒント数と「正解を明かすか」をその場で計算する（仕様書4-1a）。
+  // レンダー中に直接みちびくので、副作用（useEffect）や余計な再描画は不要で、表示のチラつきも起きない。
+  const { visibleHints, reveal: revealByWrong } = hintProgress(wrongCount);
+  // 正解・解説を明かすのは「4回まちがえた」か「答えを見るを押した」とき
+  const revealed = revealByWrong || status === 'seeAnswer';
+  // 答え合わせ済み（正解 or 答えを明かした）なら、入力・再採点はできないようにする
+  const answered = status === 'correct' || revealed;
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -52,17 +57,9 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       return;
     }
     // まちがい：回数を1つ増やす。連続送信（Enter連打など）でも取りこぼさないよう、
-    // 前回値をもとに増やす関数型更新を使う。「正解を明かすか」は下の useEffect で判定する。
+    // 前回値をもとに増やす関数型更新を使う。
     setWrongCount((prev) => prev + 1);
   }
-
-  // まちがえた回数が既定に達したら（4回）、正解・解説を明かす。
-  // handleSubmit で回数を増やしたあと、その結果の wrongCount を見て判定する。
-  useEffect(() => {
-    if (status === 'answering' && hintProgress(wrongCount).reveal) {
-      setStatus('revealed');
-    }
-  }, [wrongCount, status]);
 
   function nextProblem() {
     setProblem(generateProblem(generatorKey));
@@ -99,9 +96,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       {/* まちがえた回数ぶん、ヒントを1段階ずつ表示する */}
       {visibleHints > 0 && (
         <div className="quiz-hints">
-          {status === 'answering' && (
-            <p className="quiz-wrong">✕ ちがうよ。ヒントを見てもう一度！</p>
-          )}
+          {!answered && <p className="quiz-wrong">✕ ちがうよ。ヒントを見てもう一度！</p>}
           {problem.hints.slice(0, visibleHints).map((hint, i) => (
             <p key={i} className="quiz-hint">
               <strong>ヒント{i + 1}：</strong>
@@ -112,13 +107,13 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       )}
 
       {/* 1回でもまちがえたら「答えを見る」を出す（まだ答え合わせ前のときだけ） */}
-      {status === 'answering' && wrongCount > 0 && (
-        <button type="button" className="parent-link" onClick={() => setStatus('revealed')}>
+      {!answered && wrongCount > 0 && (
+        <button type="button" className="parent-link" onClick={() => setStatus('seeAnswer')}>
           答えを見る
         </button>
       )}
 
-      {status === 'revealed' && (
+      {revealed && (
         <div className="quiz-reveal">
           <p>
             こたえ：<strong>{formatAnswer(problem.answer)}</strong>
