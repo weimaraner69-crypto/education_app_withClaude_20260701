@@ -15,6 +15,16 @@ describe('checkAnswer', () => {
       expect(checkAnswer(answer, '  78.5 ')).toBe(true);
     });
 
+    it('全角で入力しても正解として扱う（７８．５）', () => {
+      // 子供が日本語入力のまま打つケース。半角に直してから採点する。
+      expect(checkAnswer(answer, '７８．５')).toBe(true);
+    });
+
+    it('わずかな計算誤差は許すが、明確に違う数字は false', () => {
+      expect(checkAnswer(answer, '78.500000001')).toBe(true);
+      expect(checkAnswer(answer, '78.51')).toBe(false);
+    });
+
     it('ちがう数字は false', () => {
       expect(checkAnswer(answer, '78')).toBe(false);
     });
@@ -41,6 +51,10 @@ describe('checkAnswer', () => {
 
     it('しょうだけ合っていても false', () => {
       expect(checkAnswer(answer, '5 あまり 3')).toBe(false);
+    });
+
+    it('全角の数字（５あまり２）も true', () => {
+      expect(checkAnswer(answer, '５あまり２')).toBe(true);
     });
   });
 });
