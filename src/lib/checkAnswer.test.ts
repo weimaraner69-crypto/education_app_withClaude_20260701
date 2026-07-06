@@ -56,5 +56,9 @@ describe('checkAnswer', () => {
     it('全角の数字（５あまり２）も true', () => {
       expect(checkAnswer(answer, '５あまり２')).toBe(true);
     });
+
+    it('余分な数字が混ざっていたら false（5 あまり 2 999）', () => {
+      expect(checkAnswer(answer, '5 あまり 2 999')).toBe(false);
+    });
   });
 });

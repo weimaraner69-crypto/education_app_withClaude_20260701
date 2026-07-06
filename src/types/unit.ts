@@ -10,7 +10,9 @@ export interface Unit {
   order: number; // 並び順（小さいほど先に出す）
   icon?: string; // ボタンに出すアイコン（表示用の絵文字。⚖️ のように複数文字のこともある。無くてもよい）
   description?: string; // 補足説明（今は未使用。将来の説明表示用）
-  // テンプレート方式のとき、どのテンプレートで出題するかの目印（問題タイプの generatorKey に対応）。
+  // テンプレート方式のとき、どのテンプレートで出題するかの目印。
+  // 出題窓口 templateEngine に登録されたテンプレートの key（TemplateGenerator.key）を指す。
+  // 将来 Firestore に移すときは problemTypes.generatorKey がこの役割を担う。
   // これが無い単元は「まだ問題が用意されていない（準備中）」として扱う。
   generatorKey?: string;
 }

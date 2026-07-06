@@ -33,9 +33,11 @@ export function checkAnswer(answer: Answer, input: string): boolean {
       return Math.abs(n - answer.value) < 1e-6;
     }
     case 'divmod': {
-      // 「5 あまり 2」「5あまり2」「5 2」など、数字を2つ拾って比べる
+      // 「5 あまり 2」「5あまり2」「5 2」など、数字を拾って比べる。
+      // 余分な数字が混じった入力（例: 「5 あまり 2 999」）を正解にしないよう、
+      // 数字がちょうど2つのときだけ判定する。
       const nums = normalized.match(/-?\d+/g);
-      if (!nums || nums.length < 2) return false;
+      if (!nums || nums.length !== 2) return false;
       return Number(nums[0]) === answer.quotient && Number(nums[1]) === answer.remainder;
     }
     default:
