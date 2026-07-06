@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
@@ -51,13 +51,18 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       setStatus('correct');
       return;
     }
-    // まちがい：回数を1つ増やす。既定の回数に達したら正解を明かす。
-    const nextWrong = wrongCount + 1;
-    setWrongCount(nextWrong);
-    if (hintProgress(nextWrong).reveal) {
+    // まちがい：回数を1つ増やす。連続送信（Enter連打など）でも取りこぼさないよう、
+    // 前回値をもとに増やす関数型更新を使う。「正解を明かすか」は下の useEffect で判定する。
+    setWrongCount((prev) => prev + 1);
+  }
+
+  // まちがえた回数が既定に達したら（4回）、正解・解説を明かす。
+  // handleSubmit で回数を増やしたあと、その結果の wrongCount を見て判定する。
+  useEffect(() => {
+    if (status === 'answering' && hintProgress(wrongCount).reveal) {
       setStatus('revealed');
     }
-  }
+  }, [wrongCount, status]);
 
   function nextProblem() {
     setProblem(generateProblem(generatorKey));
