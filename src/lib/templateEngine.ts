@@ -1,6 +1,7 @@
 import type { Problem } from '../types/problem';
 import type { TemplateGenerator } from '../features/templates/types';
 import { multiplicationTemplate } from '../features/templates/multiplication';
+import { circleAreaTemplate } from '../features/templates/circleArea';
 
 // 出題の窓口（仕様書4-3）。
 // 画面側は「問題を1つください」とここに頼むだけ。今はテンプレート方式のみ。
@@ -8,6 +9,7 @@ import { multiplicationTemplate } from '../features/templates/multiplication';
 
 const templates: Record<string, TemplateGenerator> = {
   [multiplicationTemplate.key]: multiplicationTemplate,
+  [circleAreaTemplate.key]: circleAreaTemplate,
 };
 
 /** 指定したテンプレートの目印（generatorKey）で、問題を1つ作って返す */
