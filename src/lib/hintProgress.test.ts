@@ -20,4 +20,8 @@ describe('hintProgress', () => {
   it('5回以上でもヒントは3段階を超えない', () => {
     expect(hintProgress(10)).toEqual({ visibleHints: 3, reveal: true });
   });
+
+  it('負の回数は0として扱う（保険）', () => {
+    expect(hintProgress(-1)).toEqual({ visibleHints: 0, reveal: false });
+  });
 });

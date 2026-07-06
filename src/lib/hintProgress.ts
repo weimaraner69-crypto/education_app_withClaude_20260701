@@ -5,7 +5,8 @@
 /** ヒントの段階数（気づき→やり方→ほぼ答え の3段階） */
 export const HINT_STAGES = 3;
 
-/** この回数まちがえたら（または「答えを見る」を押したら）正解・解説を明かす */
+// この回数まちがえたら正解・解説を明かす。
+// ※「答えを見る」ボタンで即座に明かす動きは画面（QuizScreen）側の責務で、この関数は扱わない。
 export const REVEAL_AT = 4;
 
 export interface HintProgress {
