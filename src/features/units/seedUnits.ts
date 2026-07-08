@@ -26,6 +26,7 @@ export const SEED_UNITS: Unit[] = [
     name: '比・比の利用',
     order: 2,
     icon: '⚖️',
+    generatorKey: 'ratio', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'elem6-circle-area',
