@@ -19,5 +19,8 @@ export function hasLeadingMinus(input: string): boolean {
  */
 export function toggleLeadingSign(input: string): string {
   const trimmed = input.trimStart();
-  return LEADING_MINUS.test(trimmed) ? trimmed.replace(LEADING_MINUS, '') : `-${trimmed}`;
+  // マイナスを外したあと、間にあった空白（"- 5" → " 5"）も取り除いて先頭をそろえる。
+  return LEADING_MINUS.test(trimmed)
+    ? trimmed.replace(LEADING_MINUS, '').trimStart()
+    : `-${trimmed}`;
 }

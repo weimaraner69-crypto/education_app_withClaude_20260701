@@ -24,6 +24,10 @@ describe('signInput', () => {
     it('先頭空白＋マイナスでも正しく外す', () => {
       expect(toggleLeadingSign(' −5')).toBe('5');
     });
+
+    it('マイナスと数字の間の空白も残さない（"- 5" → "5"）', () => {
+      expect(toggleLeadingSign('- 5')).toBe('5');
+    });
   });
 
   describe('hasLeadingMinus', () => {
