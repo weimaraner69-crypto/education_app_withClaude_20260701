@@ -68,6 +68,11 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
     setWrongCount(0);
   }
 
+  // 先頭のマイナスを付けたり外したりする（負の答えを入力するための「±」ボタン用）。
+  function toggleSign() {
+    setInput((prev) => (prev.startsWith('-') ? prev.slice(1) : `-${prev}`));
+  }
+
   return (
     <div className="quiz">
       <p className="login-lead">{unitName}</p>
@@ -85,9 +90,22 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
           aria-label="こたえを入力"
         />
         {!answered && (
-          <button type="submit" className="quiz-submit">
-            こたえあわせ
-          </button>
+          <div className="quiz-buttons">
+            {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す */}
+            {problem.allowNegativeInput && (
+              <button
+                type="button"
+                className="quiz-sign"
+                onClick={toggleSign}
+                aria-label="プラス・マイナスを切りかえる"
+              >
+                ±
+              </button>
+            )}
+            <button type="submit" className="quiz-submit">
+              こたえあわせ
+            </button>
+          </div>
         )}
       </form>
 

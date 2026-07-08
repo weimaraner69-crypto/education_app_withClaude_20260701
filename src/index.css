@@ -206,9 +206,24 @@ button {
   color: #567;
 }
 
+.quiz-buttons {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
 .quiz-submit {
   font-size: 1.2rem;
   padding: 0.7rem 2rem;
+}
+
+/* マイナスを入れるための ± ボタン（負の答えがある問題だけ表示） */
+.quiz-sign {
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background: #f3f6f4;
+  border-color: #bcd;
 }
 
 .quiz-correct {

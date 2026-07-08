@@ -40,4 +40,8 @@ export interface Problem {
   explanation?: string; // 解説（正解表示のときに見せる）
   hints: Hints; // 3段階ヒント
   difficulty: number; // むずかしさ 1〜5
+  // 入力の見た目のヒント（採点の中身ではない）。
+  // 答えが負の数になりうる問題（例：一次関数）で true にすると、出題画面に
+  // マイナスを入れるための「±」ボタンが出る。正の数だけの問題では省略（＝出さない）。
+  allowNegativeInput?: boolean;
 }
