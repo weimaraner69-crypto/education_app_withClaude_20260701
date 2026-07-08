@@ -4,6 +4,7 @@ import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
 import { checkAnswer } from '../lib/checkAnswer';
 import { hintProgress } from '../lib/hintProgress';
+import { hasLeadingMinus, toggleLeadingSign } from '../lib/signInput';
 
 // 出題画面（PLAN タスク2-3＋2-5）。
 // 窓口（generateProblem）から問題を1つもらい、答えを入力→採点、という流れ。
@@ -35,10 +36,6 @@ function formatAnswer(answer: Answer): string {
 // （4回まちがえたときの正解表示は、下で wrongCount から直接みちびく）
 type Status = 'answering' | 'correct' | 'seeAnswer';
 
-// 先頭のマイナスにマッチする。半角 - ／全角 － (U+FF0D) ／マイナス記号 − (U+2212) を
-// まとめて扱い、± ボタンと採点で記号がズレないようにする。
-const LEADING_MINUS = /^[-－−]/;
-
 export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScreenProps) {
   const [problem, setProblem] = useState<Problem>(() => generateProblem(generatorKey));
   const [input, setInput] = useState('');
@@ -53,7 +50,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   // 答え合わせ済み（正解 or 答えを明かした）なら、入力・再採点はできないようにする
   const answered = status === 'correct' || revealed;
   // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
-  const hasMinus = LEADING_MINUS.test(input);
+  const hasMinus = hasLeadingMinus(input);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -74,10 +71,9 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
     setWrongCount(0);
   }
 
-  // 先頭のマイナスを付けたり外したりする（負の答えを入力するための「±」ボタン用）。
-  // 手入力の全角／記号マイナスも含めて外し、付けるときは半角の - にそろえる。
+  // 「±」ボタン：先頭のマイナスを付けたり外したりする（処理は src/lib/signInput に集約）。
   function toggleSign() {
-    setInput((prev) => (LEADING_MINUS.test(prev) ? prev.replace(LEADING_MINUS, '') : `-${prev}`));
+    setInput(toggleLeadingSign);
   }
 
   return (
