@@ -226,6 +226,20 @@ button {
   border-color: #bcd;
 }
 
+/* いまマイナスが付いている状態（押されている）ときのハイライト */
+.quiz-sign--on {
+  background: #ffe3e3;
+  border-color: #d55;
+  color: #d55;
+}
+
+/* 「±」ボタンの使い方の説明文 */
+.quiz-sign-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: #567;
+}
+
 .quiz-correct {
   font-size: 1.6rem;
   font-weight: bold;

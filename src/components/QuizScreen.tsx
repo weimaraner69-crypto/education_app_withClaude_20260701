@@ -90,22 +90,32 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
           aria-label="こたえを入力"
         />
         {!answered && (
-          <div className="quiz-buttons">
-            {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す */}
-            {problem.allowNegativeInput && (
-              <button
-                type="button"
-                className="quiz-sign"
-                onClick={toggleSign}
-                aria-label="プラス・マイナスを切りかえる"
-              >
-                ±
+          <>
+            <div className="quiz-buttons">
+              {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す。
+                  いまマイナスが付いていると、ボタンの色が変わって分かるようにする。 */}
+              {problem.allowNegativeInput && (
+                <button
+                  type="button"
+                  className={`quiz-sign${input.startsWith('-') ? ' quiz-sign--on' : ''}`}
+                  onClick={toggleSign}
+                  aria-pressed={input.startsWith('-')}
+                  aria-label="こたえにマイナスをつける／はずす"
+                >
+                  ±
+                </button>
+              )}
+              <button type="submit" className="quiz-submit">
+                こたえあわせ
               </button>
+            </div>
+            {/* 「±」ボタンの使い方の説明（マイナスがありうる問題だけ出す） */}
+            {problem.allowNegativeInput && (
+              <p className="quiz-sign-hint">
+                こたえがマイナスのときは「±」をおして、あたまに「−」をつけてね
+              </p>
             )}
-            <button type="submit" className="quiz-submit">
-              こたえあわせ
-            </button>
-          </div>
+          </>
         )}
       </form>
 
