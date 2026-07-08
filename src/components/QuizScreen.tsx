@@ -35,6 +35,10 @@ function formatAnswer(answer: Answer): string {
 // （4回まちがえたときの正解表示は、下で wrongCount から直接みちびく）
 type Status = 'answering' | 'correct' | 'seeAnswer';
 
+// 先頭のマイナスにマッチする。半角 - ／全角 － (U+FF0D) ／マイナス記号 − (U+2212) を
+// まとめて扱い、± ボタンと採点で記号がズレないようにする。
+const LEADING_MINUS = /^[-－−]/;
+
 export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScreenProps) {
   const [problem, setProblem] = useState<Problem>(() => generateProblem(generatorKey));
   const [input, setInput] = useState('');
@@ -48,6 +52,8 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   const revealed = revealByWrong || status === 'seeAnswer';
   // 答え合わせ済み（正解 or 答えを明かした）なら、入力・再採点はできないようにする
   const answered = status === 'correct' || revealed;
+  // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
+  const hasMinus = LEADING_MINUS.test(input);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -69,8 +75,9 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   }
 
   // 先頭のマイナスを付けたり外したりする（負の答えを入力するための「±」ボタン用）。
+  // 手入力の全角／記号マイナスも含めて外し、付けるときは半角の - にそろえる。
   function toggleSign() {
-    setInput((prev) => (prev.startsWith('-') ? prev.slice(1) : `-${prev}`));
+    setInput((prev) => (LEADING_MINUS.test(prev) ? prev.replace(LEADING_MINUS, '') : `-${prev}`));
   }
 
   return (
@@ -97,9 +104,9 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
               {problem.allowNegativeInput && (
                 <button
                   type="button"
-                  className={`quiz-sign${input.startsWith('-') ? ' quiz-sign--on' : ''}`}
+                  className={`quiz-sign${hasMinus ? ' quiz-sign--on' : ''}`}
                   onClick={toggleSign}
-                  aria-pressed={input.startsWith('-')}
+                  aria-pressed={hasMinus}
                   aria-label="こたえにマイナスをつける／はずす"
                 >
                   ±
@@ -112,7 +119,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
             {/* 「±」ボタンの使い方の説明（マイナスがありうる問題だけ出す） */}
             {problem.allowNegativeInput && (
               <p className="quiz-sign-hint">
-                こたえがマイナスのときは「±」をおして、あたまに「−」をつけてね
+                こたえがマイナスのときは「±」をおして、あたまに「-」をつけてね
               </p>
             )}
           </>

@@ -25,6 +25,13 @@ describe('checkAnswer', () => {
       expect(checkAnswer(answer, '78.51')).toBe(false);
     });
 
+    it('いろいろなマイナス記号（-／－／−）を半角として扱う', () => {
+      const neg: Answer = { format: 'number', value: -5 };
+      expect(checkAnswer(neg, '-5')).toBe(true); // 半角ハイフンマイナス
+      expect(checkAnswer(neg, '－5')).toBe(true); // 全角マイナス
+      expect(checkAnswer(neg, '−5')).toBe(true); // マイナス記号（U+2212）
+    });
+
     it('ちがう数字は false', () => {
       expect(checkAnswer(answer, '78')).toBe(false);
     });

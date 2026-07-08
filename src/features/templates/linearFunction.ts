@@ -33,12 +33,17 @@ export const linearFunctionTemplate: TemplateGenerator = {
     const y = a * x + b;
 
     const expr = `y = ${formatAx(a)}${formatB(b)}`;
-    // b を「たす／ひく」の言い回し（ヒント・解説用）
-    const bStep = b > 0 ? `に ${b} をたす` : b < 0 ? `から ${-b} をひく` : 'がそのまま答え';
+    // b を「たす／ひく」の言い回し（ヒント2用）。b=0 のときも自然な一文になるようにする。
+    const bStep =
+      b > 0
+        ? `その数に ${b} をたそう`
+        : b < 0
+          ? `その数から ${-b} をひこう`
+          : 'その数がそのまま答えだよ';
 
     const hints: Problem['hints'] = [
       `x のところに ${x} を入れて計算するよ。`,
-      `${a} × (${x}) = ${a * x}。その数 ${bStep}。`,
+      `${a} × (${x}) = ${a * x}。${bStep}。`,
       `${a * x}${formatB(b)} は？`,
     ];
 

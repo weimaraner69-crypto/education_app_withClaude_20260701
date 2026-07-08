@@ -11,7 +11,7 @@ function toHalfWidthNumber(input: string): string {
   return input
     .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xff10 + 0x30)) // 全角数字
     .replace(/．/g, '.') // 全角ピリオド
-    .replace(/－/g, '-'); // 全角マイナス
+    .replace(/[－−]/g, '-'); // 全角マイナス（－）・マイナス記号（−）を半角 - に
   // 全角スペースは trim() が除去し、divmod の数字抽出も途中の空白を無視するので変換不要。
 }
 
