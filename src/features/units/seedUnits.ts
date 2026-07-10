@@ -18,6 +18,7 @@ export const SEED_UNITS: Unit[] = [
     name: '分数のかけ算・わり算',
     order: 1,
     icon: '🍰',
+    generatorKey: 'fraction-muldiv', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'elem6-ratio',
@@ -53,6 +54,7 @@ export const SEED_UNITS: Unit[] = [
     name: '連立方程式',
     order: 1,
     icon: '🧮',
+    generatorKey: 'simultaneous-equation', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'jhs2-linear-function',
@@ -70,6 +72,7 @@ export const SEED_UNITS: Unit[] = [
     name: '式の計算',
     order: 3,
     icon: '➗',
+    generatorKey: 'expression-calculation', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'jhs2-probability',
@@ -78,6 +81,7 @@ export const SEED_UNITS: Unit[] = [
     name: '確率',
     order: 4,
     icon: '🎲',
+    generatorKey: 'probability', // この単元はテンプレートで出題できる（タスク2-4）
   },
 ];
 

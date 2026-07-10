@@ -12,6 +12,8 @@ export type ProblemSource = 'template' | 'ai';
 export type Answer =
   | { format: 'number'; value: number } // 数字ひとつ（計算・図形・グラフ）
   | { format: 'divmod'; quotient: number; remainder: number } // しょう と あまり（わり算）
+  | { format: 'fraction'; numerator: number; denominator: number } // 分数（分子／分母）
+  | { format: 'pair'; values: readonly [number, number]; labels: readonly [string, string] } // x、yなど2つの値
   | { format: 'choice'; correctIndex: number } // 選択肢の何番目が正解か（将来）
   | { format: 'text'; accepted: string[] }; // 許容する記述の一覧（さらに将来）
 

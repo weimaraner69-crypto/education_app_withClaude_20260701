@@ -206,6 +206,12 @@ button {
   color: #567;
 }
 
+.quiz-input-hint {
+  margin: -0.4rem 0 0;
+  font-size: 0.9rem;
+  color: #567;
+}
+
 .quiz-buttons {
   display: flex;
   gap: 0.6rem;

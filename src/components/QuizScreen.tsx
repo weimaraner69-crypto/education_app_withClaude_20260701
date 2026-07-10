@@ -25,10 +25,30 @@ function formatAnswer(answer: Answer): string {
       return String(answer.value);
     case 'divmod':
       return `${answer.quotient} あまり ${answer.remainder}`;
+    case 'fraction':
+      return answer.denominator === 1
+        ? String(answer.numerator)
+        : `${answer.numerator}/${answer.denominator}`;
+    case 'pair':
+      return `${answer.labels[0]} = ${answer.values[0]}、${answer.labels[1]} = ${answer.values[1]}`;
     case 'choice':
       return `${answer.correctIndex + 1} 番目`;
     case 'text':
       return answer.accepted.join(' / ');
+  }
+}
+
+function inputGuide(answer: Answer): { placeholder: string; hint?: string } {
+  switch (answer.format) {
+    case 'fraction':
+      return { placeholder: '例：3/4', hint: '分数は「分子/分母」の形で入力してね。' };
+    case 'pair':
+      return {
+        placeholder: `${answer.labels[0]}, ${answer.labels[1]}`,
+        hint: `${answer.labels[0]} と ${answer.labels[1]} を、この順番で入力してね。例：2, 3`,
+      };
+    default:
+      return { placeholder: 'こたえ' };
   }
 }
 
@@ -51,6 +71,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   const answered = status === 'correct' || revealed;
   // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
   const hasMinus = hasLeadingMinus(input);
+  const guide = inputGuide(problem.answer);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -85,13 +106,14 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
         <input
           className="quiz-input"
           type="text"
-          inputMode="decimal"
+          inputMode={problem.answer.format === 'number' ? 'decimal' : 'text'}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           disabled={answered}
-          placeholder="こたえ"
+          placeholder={guide.placeholder}
           aria-label="こたえを入力"
         />
+        {guide.hint && <p className="quiz-input-hint">{guide.hint}</p>}
         {!answered && (
           <>
             <div className="quiz-buttons">
