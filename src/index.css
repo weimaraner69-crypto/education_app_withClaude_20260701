@@ -192,6 +192,62 @@ button {
   margin: 1rem 0;
 }
 
+.problem-figure {
+  width: min(100%, 15rem);
+  margin: 0 auto 1rem;
+}
+
+.problem-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #bcd;
+  background: #fff;
+}
+
+.figure-shape {
+  fill: #eafbf1;
+  stroke: #28734a;
+  stroke-width: 3;
+}
+
+.figure-measure,
+.figure-axis {
+  stroke: #567;
+  stroke-width: 2;
+}
+
+.figure-point {
+  fill: #28734a;
+}
+
+.figure-grid {
+  stroke: #d8e3dc;
+  stroke-width: 1;
+}
+
+.figure-line {
+  stroke: #d55;
+  stroke-width: 3;
+}
+
+.figure-symmetry-axis {
+  stroke: #4a67b3;
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.figure-arrow {
+  fill: none;
+  stroke: #567;
+  stroke-width: 2;
+}
+
+.figure-text {
+  fill: #234;
+  font-size: 12px;
+}
+
 .quiz-input {
   font-size: 1.8rem;
   text-align: center;

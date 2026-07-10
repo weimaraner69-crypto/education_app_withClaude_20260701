@@ -5,6 +5,7 @@ import { generateProblem } from '../lib/templateEngine';
 import { checkAnswer } from '../lib/checkAnswer';
 import { hintProgress } from '../lib/hintProgress';
 import { hasLeadingMinus, toggleLeadingSign } from '../lib/signInput';
+import ProblemFigure from './ProblemFigure';
 
 // 出題画面（PLAN タスク2-3＋2-5）。
 // 窓口（generateProblem）から問題を1つもらい、答えを入力→採点、という流れ。
@@ -111,6 +112,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
     <div className="quiz">
       <p className="login-lead">{unitName}</p>
       <p className="problem">{problem.prompt}</p>
+      {problem.figure && <ProblemFigure figure={problem.figure} />}
 
       <form onSubmit={handleSubmit} className="quiz-form">
         {!isChoiceQuestion && (

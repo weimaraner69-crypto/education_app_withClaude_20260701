@@ -55,6 +55,7 @@ export const scaleDrawingTemplate: TemplateGenerator = {
       gradeId: this.gradeId,
       unitId: this.unitId,
       prompt: `長さ ${original}cm の辺を ${scale} 倍に拡大しました。拡大図の辺の長さは？`,
+      figure: { kind: 'scale-rectangle', params: { original, scale } },
       answer: { format: 'number', value: answer },
       hints: hints(
         '拡大図では、対応する長さを同じ倍率にするよ。',
@@ -81,6 +82,7 @@ export const symmetryTemplate: TemplateGenerator = {
       gradeId: this.gradeId,
       unitId: this.unitId,
       prompt: `正${sides}角形には、線対称の軸が何本ありますか？`,
+      figure: { kind: 'symmetry-polygon', params: { sides } },
       answer: { format: 'number', value: sides },
       hints: hints(
         '正多角形は、中心を通って重なる線を考えるよ。',
