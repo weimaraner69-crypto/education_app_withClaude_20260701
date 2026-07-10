@@ -72,17 +72,27 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
   const hasMinus = hasLeadingMinus(input);
   const guide = inputGuide(problem.answer);
+  const isChoiceQuestion = problem.answer.format === 'choice' && Boolean(problem.choices);
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+  function submitAnswer(value: string) {
     if (answered) return;
-    if (checkAnswer(problem.answer, input)) {
+    if (checkAnswer(problem.answer, value)) {
       setStatus('correct');
       return;
     }
     // まちがい：回数を1つ増やす。連続送信（Enter連打など）でも取りこぼさないよう、
     // 前回値をもとに増やす関数型更新を使う。
     setWrongCount((prev) => prev + 1);
+  }
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    submitAnswer(input);
+  }
+
+  function handleChoice(index: number) {
+    setInput(String(index));
+    submitAnswer(String(index));
   }
 
   function nextProblem() {
@@ -103,37 +113,56 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       <p className="problem">{problem.prompt}</p>
 
       <form onSubmit={handleSubmit} className="quiz-form">
-        <input
-          className="quiz-input"
-          type="text"
-          inputMode={problem.answer.format === 'number' ? 'decimal' : 'text'}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          disabled={answered}
-          placeholder={guide.placeholder}
-          aria-label="こたえを入力"
-        />
-        {guide.hint && <p className="quiz-input-hint">{guide.hint}</p>}
+        {!isChoiceQuestion && (
+          <>
+            <input
+              className="quiz-input"
+              type="text"
+              inputMode={problem.answer.format === 'number' ? 'decimal' : 'text'}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              disabled={answered}
+              placeholder={guide.placeholder}
+              aria-label="こたえを入力"
+            />
+            {guide.hint && <p className="quiz-input-hint">{guide.hint}</p>}
+          </>
+        )}
         {!answered && (
           <>
-            <div className="quiz-buttons">
-              {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す。
+            {isChoiceQuestion ? (
+              <div className="quiz-choices" aria-label="こたえを選ぶ">
+                {problem.choices?.map((choice, index) => (
+                  <button
+                    key={choice}
+                    type="button"
+                    className="quiz-choice"
+                    onClick={() => handleChoice(index)}
+                  >
+                    {choice}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="quiz-buttons">
+                {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す。
                   いまマイナスが付いていると、ボタンの色が変わって分かるようにする。 */}
-              {problem.allowNegativeInput && (
-                <button
-                  type="button"
-                  className={`quiz-sign${hasMinus ? ' quiz-sign--on' : ''}`}
-                  onClick={toggleSign}
-                  aria-pressed={hasMinus}
-                  aria-label="こたえにマイナスをつける／はずす"
-                >
-                  ±
+                {problem.allowNegativeInput && (
+                  <button
+                    type="button"
+                    className={`quiz-sign${hasMinus ? ' quiz-sign--on' : ''}`}
+                    onClick={toggleSign}
+                    aria-pressed={hasMinus}
+                    aria-label="こたえにマイナスをつける／はずす"
+                  >
+                    ±
+                  </button>
+                )}
+                <button type="submit" className="quiz-submit">
+                  こたえあわせ
                 </button>
-              )}
-              <button type="submit" className="quiz-submit">
-                こたえあわせ
-              </button>
-            </div>
+              </div>
+            )}
             {/* 「±」ボタンの使い方の説明（マイナスがありうる問題だけ出す） */}
             {problem.allowNegativeInput && (
               <p className="quiz-sign-hint">

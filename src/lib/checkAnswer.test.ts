@@ -107,4 +107,17 @@ describe('checkAnswer', () => {
       expect(checkAnswer(answer, '2')).toBe(false);
     });
   });
+
+  describe('choice（選択式）', () => {
+    const answer: Answer = { format: 'choice', correctIndex: 1 };
+
+    it('正しい選択肢の番号は true', () => {
+      expect(checkAnswer(answer, '1')).toBe(true);
+    });
+
+    it('別の選択肢の番号や文字は false', () => {
+      expect(checkAnswer(answer, '0')).toBe(false);
+      expect(checkAnswer(answer, '答え')).toBe(false);
+    });
+  });
 });

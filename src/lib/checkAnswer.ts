@@ -68,8 +68,10 @@ export function checkAnswer(answer: Answer, input: string): boolean {
       if (!nums || nums.length !== 2) return false;
       return Number(nums[0]) === answer.values[0] && Number(nums[1]) === answer.values[1];
     }
+    case 'choice':
+      return normalized === String(answer.correctIndex);
     default:
-      // choice / text は将来対応
+      // text は将来対応
       return false;
   }
 }
