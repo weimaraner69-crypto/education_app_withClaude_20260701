@@ -3,6 +3,7 @@ import type { TemplateGenerator } from '../features/templates/types';
 import { multiplicationTemplate } from '../features/templates/multiplication';
 import { circleAreaTemplate } from '../features/templates/circleArea';
 import { ratioTemplate } from '../features/templates/ratio';
+import { linearFunctionTemplate } from '../features/templates/linearFunction';
 
 // 出題の窓口（仕様書4-3）。
 // 画面側は「問題を1つください」とここに頼むだけ。今はテンプレート方式のみ。
@@ -12,6 +13,7 @@ const templates: Record<string, TemplateGenerator> = {
   [multiplicationTemplate.key]: multiplicationTemplate,
   [circleAreaTemplate.key]: circleAreaTemplate,
   [ratioTemplate.key]: ratioTemplate,
+  [linearFunctionTemplate.key]: linearFunctionTemplate,
 };
 
 /** 指定したテンプレートの目印（generatorKey）で、問題を1つ作って返す */

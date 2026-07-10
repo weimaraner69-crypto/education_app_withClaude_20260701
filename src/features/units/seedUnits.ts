@@ -61,6 +61,7 @@ export const SEED_UNITS: Unit[] = [
     name: '一次関数',
     order: 2,
     icon: '📈',
+    generatorKey: 'linear-function', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'jhs2-expression-calc',

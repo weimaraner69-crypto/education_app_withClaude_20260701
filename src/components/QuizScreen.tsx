@@ -4,6 +4,7 @@ import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
 import { checkAnswer } from '../lib/checkAnswer';
 import { hintProgress } from '../lib/hintProgress';
+import { hasLeadingMinus, toggleLeadingSign } from '../lib/signInput';
 
 // 出題画面（PLAN タスク2-3＋2-5）。
 // 窓口（generateProblem）から問題を1つもらい、答えを入力→採点、という流れ。
@@ -48,6 +49,8 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   const revealed = revealByWrong || status === 'seeAnswer';
   // 答え合わせ済み（正解 or 答えを明かした）なら、入力・再採点はできないようにする
   const answered = status === 'correct' || revealed;
+  // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
+  const hasMinus = hasLeadingMinus(input);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -68,6 +71,11 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
     setWrongCount(0);
   }
 
+  // 「±」ボタン：先頭のマイナスを付けたり外したりする（処理は src/lib/signInput に集約）。
+  function toggleSign() {
+    setInput(toggleLeadingSign);
+  }
+
   return (
     <div className="quiz">
       <p className="login-lead">{unitName}</p>
@@ -85,9 +93,32 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
           aria-label="こたえを入力"
         />
         {!answered && (
-          <button type="submit" className="quiz-submit">
-            こたえあわせ
-          </button>
+          <>
+            <div className="quiz-buttons">
+              {/* 負の答えがありうる問題だけ、マイナスを入れる「±」ボタンを出す。
+                  いまマイナスが付いていると、ボタンの色が変わって分かるようにする。 */}
+              {problem.allowNegativeInput && (
+                <button
+                  type="button"
+                  className={`quiz-sign${hasMinus ? ' quiz-sign--on' : ''}`}
+                  onClick={toggleSign}
+                  aria-pressed={hasMinus}
+                  aria-label="こたえにマイナスをつける／はずす"
+                >
+                  ±
+                </button>
+              )}
+              <button type="submit" className="quiz-submit">
+                こたえあわせ
+              </button>
+            </div>
+            {/* 「±」ボタンの使い方の説明（マイナスがありうる問題だけ出す） */}
+            {problem.allowNegativeInput && (
+              <p className="quiz-sign-hint">
+                こたえがマイナスのときは「±」をおして、あたまに「-」をつけてね
+              </p>
+            )}
+          </>
         )}
       </form>
 
