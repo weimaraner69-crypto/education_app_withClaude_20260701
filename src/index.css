@@ -354,6 +354,12 @@ button {
   margin-top: 0.5rem;
 }
 
+.quiz-save-error {
+  color: #b42318;
+  font-size: 0.9rem;
+  margin: 12px 0 0;
+}
+
 .quiz-footer {
   margin-top: 1.5rem;
 }

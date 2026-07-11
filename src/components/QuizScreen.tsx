@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
 import { checkAnswer } from '../lib/checkAnswer';
 import { hintProgress } from '../lib/hintProgress';
 import { hasLeadingMinus, toggleLeadingSign } from '../lib/signInput';
+import { createAttempt } from '../features/learningRecords/createAttempt';
+import { saveAttempt } from '../features/learningRecords/saveAttempt';
 import ProblemFigure from './ProblemFigure';
 
 // 出題画面（PLAN タスク2-3＋2-5）。
@@ -12,10 +14,13 @@ import ProblemFigure from './ProblemFigure';
 // ・正解 … ⭕ を出して「次の問題」へ
 // ・まちがい … まちがえるたびにヒントが1段階ずつ増える（仕様書4-1a）。
 //   1回目→ヒント1、2回目→ヒント2、3回目→ヒント3、4回目（か「答えを見る」）で正解と解説を表示。
-// ※学習記録の保存（タスク2-7）は、このあと足す。
 interface QuizScreenProps {
   unitName: string; // 画面上部に出す単元名
   generatorKey: string; // どのテンプレートで出題するか
+  userId: string;
+  subjectId: string;
+  gradeId: string;
+  unitId: string;
   onBack: () => void; // 単元えらびにもどる
 }
 
@@ -57,11 +62,23 @@ function inputGuide(answer: Answer): { placeholder: string; hint?: string } {
 // （4回まちがえたときの正解表示は、下で wrongCount から直接みちびく）
 type Status = 'answering' | 'correct' | 'seeAnswer';
 
-export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScreenProps) {
+export default function QuizScreen({
+  unitName,
+  generatorKey,
+  userId,
+  subjectId,
+  gradeId,
+  unitId,
+  onBack,
+}: QuizScreenProps) {
   const [problem, setProblem] = useState<Problem>(() => generateProblem(generatorKey));
   const [input, setInput] = useState('');
   const [status, setStatus] = useState<Status>('answering');
   const [wrongCount, setWrongCount] = useState(0); // この問題でまちがえた回数
+  const [saveFailed, setSaveFailed] = useState(false);
+  const startedAtMsRef = useRef(Date.now());
+  const attemptRecordedRef = useRef(false);
+  const problemSequenceRef = useRef(0);
 
   // まちがえた回数から、見せるヒント数と「正解を明かすか」をその場で計算する（仕様書4-1a）。
   // レンダー中に直接みちびくので、副作用（useEffect）や余計な再描画は不要で、表示のチラつきも起きない。
@@ -75,11 +92,42 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
   const guide = inputGuide(problem.answer);
   const isChoiceQuestion = problem.answer.format === 'choice' && Boolean(problem.choices);
 
+  function recordAttempt(isCorrect: boolean, hintsUsedCount: number) {
+    if (attemptRecordedRef.current) return;
+
+    attemptRecordedRef.current = true;
+    const problemSequence = problemSequenceRef.current;
+    const attempt = createAttempt({
+      userId,
+      subjectId,
+      gradeId,
+      unitId,
+      problemTypeId: generatorKey,
+      isCorrect,
+      startedAtMs: startedAtMsRef.current,
+      answeredAtMs: Date.now(),
+      hintsUsedCount,
+    });
+
+    // 保存は画面操作を待たせない。次の問題へ進んだ後に古い失敗表示が出ないよう、
+    // 同じ問題を表示中のときだけ保存失敗を知らせる。
+    void saveAttempt(attempt).then((result) => {
+      if (result === 'failed' && problemSequence === problemSequenceRef.current) {
+        setSaveFailed(true);
+      }
+    });
+  }
+
   function submitAnswer(value: string) {
-    if (answered) return;
+    if (answered || attemptRecordedRef.current) return;
     if (checkAnswer(problem.answer, value)) {
+      recordAttempt(true, visibleHints);
       setStatus('correct');
       return;
+    }
+    const nextWrongCount = wrongCount + 1;
+    if (nextWrongCount >= 4) {
+      recordAttempt(false, visibleHints);
     }
     // まちがい：回数を1つ増やす。連続送信（Enter連打など）でも取りこぼさないよう、
     // 前回値をもとに増やす関数型更新を使う。
@@ -101,6 +149,16 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
     setInput('');
     setStatus('answering');
     setWrongCount(0);
+    setSaveFailed(false);
+    startedAtMsRef.current = Date.now();
+    attemptRecordedRef.current = false;
+    problemSequenceRef.current += 1;
+  }
+
+  function revealAnswer() {
+    if (answered || attemptRecordedRef.current) return;
+    recordAttempt(false, visibleHints);
+    setStatus('seeAnswer');
   }
 
   // 「±」ボタン：先頭のマイナスを付けたり外したりする（処理は src/lib/signInput に集約）。
@@ -192,7 +250,7 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
 
       {/* 1回でもまちがえたら「答えを見る」を出す（まだ答え合わせ前のときだけ） */}
       {!answered && wrongCount > 0 && (
-        <button type="button" className="parent-link" onClick={() => setStatus('seeAnswer')}>
+        <button type="button" className="parent-link" onClick={revealAnswer}>
           答えを見る
         </button>
       )}
@@ -207,9 +265,16 @@ export default function QuizScreen({ unitName, generatorKey, onBack }: QuizScree
       )}
 
       {answered && (
-        <button type="button" className="quiz-next" onClick={nextProblem}>
-          次の問題 →
-        </button>
+        <>
+          <button type="button" className="quiz-next" onClick={nextProblem}>
+            次の問題 →
+          </button>
+          {saveFailed && (
+            <p className="quiz-save-error" role="status">
+              学習記録を保存できませんでした。問題はこのまま続けられます。
+            </p>
+          )}
+        </>
       )}
 
       <div className="quiz-footer">

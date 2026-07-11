@@ -11,9 +11,9 @@
 
 ## 現状（Status）
 
-- フェーズ：山2「算数・数学ドリル本体」進行中。小6・中2の全単元テンプレートと、円・図形・
-  一次関数グラフの表示まで完了。次は学習記録の保存（2-7）
-- ブロッカー：Firestore の実データ作成は、英理究さんの Firebase プロジェクト作成後に実施
+- フェーズ：山2「算数・数学ドリル本体」進行中。小6・中2の全単元テンプレート、図形・グラフ、
+  学習記録の保存処理まで完了。Firebase 接続後に実データ保存を確認する
+- ブロッカー：Firebase プロジェクト作成と、Firestore の実データ保存の確認
 - 直近の重要決定：技術構成を React / Firebase / TypeScript に確定し、進め方は
   `dev-orchestration-template` のワークフローを採用（2026-07-04）
 
@@ -43,10 +43,11 @@
 
 - 目的：正誤・ヒント使用回数をFirestoreに保存する（PLAN.md タスク2-7）
 - 受入条件：
-  - 正誤・ヒント使用回数・単元IDがFirestoreへ保存される
-  - 保存失敗時も問題を解き続けられる
-- 依存：Firebaseプロジェクトの作成・接続設定
-- 触る領域：`src/lib/firebase.ts`, `src/features`, `src/types`
+  - ✅ 正誤・ヒント使用回数・単元IDを `attempts` に保存する処理がある
+  - ✅ 保存失敗時も問題を解き続けられる
+  - ⏳ Firebase 接続後、正誤・ヒント使用回数・単元IDがFirestoreへ保存されることを確認する
+- 依存：Firebaseプロジェクトの作成・接続設定（手順は `docs/firebase-setup.md`）
+- 触る領域：`src/lib/firebase.ts`, `src/features/learningRecords`, `src/types/attempt.ts`
 
 ## Done（今期完了）
 
@@ -103,6 +104,9 @@
 
 ## 直近の変更履歴（最大10件）
 
+- 2026-07-11: N-007 の保存処理を実装。正解・4回目の不正解・答え表示時に `attempts` へ
+  解答記録を追加する。Firebase未設定時は保存を見送り、失敗時も問題を続けられる。実データの
+  保存確認は Firebase プロジェクト作成後に行う。接続手順を `docs/firebase-setup.md` に追加。
 - 2026-07-10: N-006 完了。`ProblemFigure` を追加し、円・拡大図・対称な図形・一次関数のSVG表示を実装。
   N-004をDoneへ移し、NextをN-007（Firebase接続後の学習記録保存）に更新。
 - 2026-07-10: N-004 の基礎ドリル範囲を小6・中2の学習指導要領の全内容へ拡大。

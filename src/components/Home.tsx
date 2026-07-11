@@ -43,6 +43,10 @@ export default function Home({ user, onLogout }: HomeProps) {
             <QuizScreen
               unitName={selectedUnit.name}
               generatorKey={selectedUnit.generatorKey}
+              userId={user.id}
+              subjectId={selectedUnit.subjectId}
+              gradeId={selectedUnit.gradeId}
+              unitId={selectedUnit.id}
               onBack={() => setSelectedUnit(null)}
             />
           ) : (

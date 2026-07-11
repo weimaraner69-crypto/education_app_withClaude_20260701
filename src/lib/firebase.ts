@@ -2,7 +2,7 @@
 // 実際のキーは .env（gitignore対象・秘密情報）に置く。値は英理究さんが Firebase の
 // プロジェクトを作ってから .env に貼り付ける（.env.example を参照）。
 //
-// まだ Firebase を使う画面が無いため、この初期化は「呼ばれたとき」だけ動くようにしてある
+// 接続設定が未入力の開発中でも画面を使えるよう、初期化は「呼ばれたとき」だけ行う
 // （getDb() を呼ぶまで接続しない）。
 import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
@@ -19,8 +19,16 @@ const firebaseConfig = {
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
 
+/** Firebase の設定値がすべて入力されているかを調べる。 */
+export function isFirebaseConfigured(): boolean {
+  return Object.values(firebaseConfig).every(Boolean);
+}
+
 /** Firestore（保管庫）への接続を返す。初回だけ初期化する。 */
 export function getDb(): Firestore {
+  if (!isFirebaseConfigured()) {
+    throw new Error('Firebase の接続設定が未入力です。');
+  }
   app ??= initializeApp(firebaseConfig);
   db ??= getFirestore(app);
   return db;
