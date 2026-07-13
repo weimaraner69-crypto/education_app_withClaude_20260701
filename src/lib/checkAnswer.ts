@@ -29,8 +29,8 @@ function isEquivalentFraction(
 
 /**
  * 入力（文字列）が正解かどうかを返す。
- * 今は number（数字ひとつ）と divmod（しょう・あまり）に対応。
- * choice / text は将来のAI文章問題・記述式で使うので、今は未対応（false）。
+ * number、divmod、fraction、pair、choice に対応する。
+ * text は、英語のスペルミスをどこまで許容するかを決めてから対応する。
  */
 export function checkAnswer(answer: Answer, input: string): boolean {
   const normalized = toHalfWidthNumber(input).trim();

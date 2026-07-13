@@ -4,6 +4,7 @@ import type { Problem, Answer } from '../types/problem';
 import { generateProblem } from '../lib/templateEngine';
 import { checkAnswer } from '../lib/checkAnswer';
 import { hintProgress } from '../lib/hintProgress';
+import { hasChoices } from '../lib/hasChoices';
 import { hasLeadingMinus, toggleLeadingSign } from '../lib/signInput';
 import { createAttempt } from '../features/learningRecords/createAttempt';
 import { saveAttempt } from '../features/learningRecords/saveAttempt';
@@ -90,7 +91,7 @@ export default function QuizScreen({
   // いま入力の先頭にマイナスが付いているか（± ボタンの表示状態に使う）
   const hasMinus = hasLeadingMinus(input);
   const guide = inputGuide(problem.answer);
-  const isChoiceQuestion = problem.answer.format === 'choice' && Boolean(problem.choices);
+  const isChoiceQuestion = hasChoices(problem);
 
   function recordAttempt(isCorrect: boolean, hintsUsedCount: number) {
     if (attemptRecordedRef.current) return;
@@ -194,7 +195,7 @@ export default function QuizScreen({
               <div className="quiz-choices" aria-label="こたえを選ぶ">
                 {problem.choices?.map((choice, index) => (
                   <button
-                    key={choice}
+                    key={`${index}-${choice}`}
                     type="button"
                     className="quiz-choice"
                     onClick={() => handleChoice(index)}
