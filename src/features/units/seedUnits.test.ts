@@ -13,8 +13,8 @@ describe('unitsForGrade', () => {
 
   it('中2（g-jhs2）の単元だけを返す', () => {
     const units = unitsForGrade('g-jhs2');
-    // 学習指導要領対応表にある中2の7内容が、すべて出題できることを守る。
-    expect(units).toHaveLength(7);
+    // 算数・数学7内容と英語2内容が、すべて出題できることを守る。
+    expect(units).toHaveLength(9);
     expect(units.every((u) => u.gradeId === 'g-jhs2')).toBe(true);
     expect(units.every((u) => u.generatorKey)).toBe(true);
   });
@@ -23,6 +23,11 @@ describe('unitsForGrade', () => {
     const orders = unitsForGrade('g-elem6').map((u) => u.order);
     const sorted = [...orders].sort((a, b) => a - b);
     expect(orders).toEqual(sorted);
+  });
+
+  it('中2では英語の単元を最初に並べる', () => {
+    const units = unitsForGrade('g-jhs2');
+    expect(units.slice(0, 2).map((unit) => unit.subjectId)).toEqual(['english', 'english']);
   });
 
   it('未知・未指定の学年では空の配列を返す', () => {

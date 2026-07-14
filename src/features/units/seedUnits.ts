@@ -6,6 +6,7 @@ import type { Unit } from '../../types/unit';
 // 中身は PLAN 4-1 で決めた単元（2026/07/04 決定）に合わせている。
 //   小6・中2：文部科学省の学習指導要領にある内容を、問題を作りやすい単元に分けている。
 const SUBJECT_MATH = 'math'; // 算数・数学
+const SUBJECT_ENGLISH = 'english'; // 英語
 
 export const SEED_UNITS: Unit[] = [
   // ---- 小6（算数） ----
@@ -172,6 +173,25 @@ export const SEED_UNITS: Unit[] = [
     icon: '📦',
     generatorKey: 'box-plot',
   },
+  // ---- 中2（英語） ----
+  {
+    id: 'jhs2-english-vocabulary',
+    subjectId: SUBJECT_ENGLISH,
+    gradeId: 'g-jhs2',
+    name: '英単語（意味）',
+    order: 1,
+    icon: '🔤',
+    generatorKey: 'english-vocabulary',
+  },
+  {
+    id: 'jhs2-english-grammar',
+    subjectId: SUBJECT_ENGLISH,
+    gradeId: 'g-jhs2',
+    name: '英文法（文の中で選ぶ）',
+    order: 2,
+    icon: '💬',
+    generatorKey: 'english-grammar',
+  },
 ];
 
 /**
@@ -180,5 +200,8 @@ export const SEED_UNITS: Unit[] = [
  */
 export function unitsForGrade(gradeId: string | undefined): Unit[] {
   if (!gradeId) return [];
-  return SEED_UNITS.filter((u) => u.gradeId === gradeId).sort((a, b) => a.order - b.order);
+  return SEED_UNITS.filter((u) => u.gradeId === gradeId).sort((a, b) => {
+    const subjectOrder = (subjectId: string) => (subjectId === SUBJECT_ENGLISH ? 0 : 1);
+    return subjectOrder(a.subjectId) - subjectOrder(b.subjectId) || a.order - b.order;
+  });
 }

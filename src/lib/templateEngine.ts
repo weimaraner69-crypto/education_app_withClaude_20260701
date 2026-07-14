@@ -8,6 +8,8 @@ import { fractionMulDivTemplate } from '../features/templates/fractionMulDiv';
 import { simultaneousEquationTemplate } from '../features/templates/simultaneousEquation';
 import { expressionCalculationTemplate } from '../features/templates/expressionCalculation';
 import { probabilityTemplate } from '../features/templates/probability';
+import { englishVocabularyTemplate } from '../features/templates/englishVocabulary';
+import { englishGrammarTemplate } from '../features/templates/englishGrammar';
 import {
   approximateAreaTemplate,
   boxPlotTemplate,
@@ -35,6 +37,8 @@ const templates: Record<string, TemplateGenerator> = {
   [simultaneousEquationTemplate.key]: simultaneousEquationTemplate,
   [expressionCalculationTemplate.key]: expressionCalculationTemplate,
   [probabilityTemplate.key]: probabilityTemplate,
+  [englishVocabularyTemplate.key]: englishVocabularyTemplate,
+  [englishGrammarTemplate.key]: englishGrammarTemplate,
   [letterExpressionTemplate.key]: letterExpressionTemplate,
   [scaleDrawingTemplate.key]: scaleDrawingTemplate,
   [symmetryTemplate.key]: symmetryTemplate,
