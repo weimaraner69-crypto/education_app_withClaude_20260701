@@ -20,18 +20,18 @@
 
 ## コードの書き方（必ず守ること）
 
-| 項目 | ルール |
-|------|--------|
-| 使用言語 | TypeScript（JavaScriptではなく） |
-| コンポーネント | Reactの関数コンポーネント＋Hooks。クラス形式は使わない |
-| ファイル名 | 画面部品：`PascalCase.tsx`（例：`QuestionCard.tsx`）／それ以外：`camelCase.ts`（例：`generateProblem.ts`） |
-| 変数・関数名 | `camelCase`。定数は `UPPER_SNAKE_CASE` |
-| フォルダ構成 | `src/components`（画面部品）／`src/features`（機能ごと）／`src/lib`（共通処理）／`src/types`（型定義） |
-| コメント | 複雑な処理には日本語で「なぜこう書いたか」を一言添える |
-| 整形・チェック | Prettier（自動整形）と ESLint（自動チェック）の設定に従う（保存時に自動整形されるようにしている） |
-| 型チェック | `tsc --noEmit`（型の矛盾チェック）を通すこと |
-| コミットメッセージ | Conventional Commits：`feat: `／`fix: `／`docs: `／`refactor: `／`test: `／`chore: ` のいずれかで始める |
-| テスト | 答えを計算するロジック（テンプレート）には、必ず簡単な自動テスト（Vitest など）を添える |
+| 項目               | ルール                                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| 使用言語           | TypeScript（JavaScriptではなく）                                                                           |
+| コンポーネント     | Reactの関数コンポーネント＋Hooks。クラス形式は使わない                                                     |
+| ファイル名         | 画面部品：`PascalCase.tsx`（例：`QuestionCard.tsx`）／それ以外：`camelCase.ts`（例：`generateProblem.ts`） |
+| 変数・関数名       | `camelCase`。定数は `UPPER_SNAKE_CASE`                                                                     |
+| フォルダ構成       | `src/components`（画面部品）／`src/features`（機能ごと）／`src/lib`（共通処理）／`src/types`（型定義）     |
+| コメント           | 複雑な処理には日本語で「なぜこう書いたか」を一言添える                                                     |
+| 整形・チェック     | Prettier（自動整形）と ESLint（自動チェック）の設定に従う（保存時に自動整形されるようにしている）          |
+| 型チェック         | `tsc --noEmit`（型の矛盾チェック）を通すこと                                                               |
+| コミットメッセージ | Conventional Commits：`feat: `／`fix: `／`docs: `／`refactor: `／`test: `／`chore: ` のいずれかで始める    |
+| テスト             | 答えを計算するロジック（テンプレート）には、必ず簡単な自動テスト（Vitest など）を添える                    |
 
 ---
 
