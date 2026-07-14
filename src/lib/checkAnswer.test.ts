@@ -68,4 +68,56 @@ describe('checkAnswer', () => {
       expect(checkAnswer(answer, '5 あまり 2 999')).toBe(false);
     });
   });
+
+  describe('fraction（分数）', () => {
+    const answer: Answer = { format: 'fraction', numerator: 1, denominator: 2 };
+
+    it('1/2 は true', () => {
+      expect(checkAnswer(answer, '1/2')).toBe(true);
+    });
+
+    it('同じ値の 2/4 と全角の ２／４ も true', () => {
+      expect(checkAnswer(answer, '2/4')).toBe(true);
+      expect(checkAnswer(answer, '２／４')).toBe(true);
+    });
+
+    it('分母が0、違う分数、文字を含む入力は false', () => {
+      expect(checkAnswer(answer, '1/0')).toBe(false);
+      expect(checkAnswer(answer, '1/3')).toBe(false);
+      expect(checkAnswer(answer, 'a/2')).toBe(false);
+    });
+
+    it('答えが整数なら、分母を省略しても true', () => {
+      const integer: Answer = { format: 'fraction', numerator: 2, denominator: 1 };
+      expect(checkAnswer(integer, '2')).toBe(true);
+    });
+  });
+
+  describe('pair（2つの答え）', () => {
+    const answer: Answer = { format: 'pair', values: [2, 3], labels: ['x', 'y'] };
+
+    it('2, 3 と x=2, y=3 は true', () => {
+      expect(checkAnswer(answer, '2, 3')).toBe(true);
+      expect(checkAnswer(answer, 'x=2, y=3')).toBe(true);
+    });
+
+    it('順番が逆、余分な数、片方だけの入力は false', () => {
+      expect(checkAnswer(answer, '3, 2')).toBe(false);
+      expect(checkAnswer(answer, '2, 3, 4')).toBe(false);
+      expect(checkAnswer(answer, '2')).toBe(false);
+    });
+  });
+
+  describe('choice（選択式）', () => {
+    const answer: Answer = { format: 'choice', correctIndex: 1 };
+
+    it('正しい選択肢の番号は true', () => {
+      expect(checkAnswer(answer, '1')).toBe(true);
+    });
+
+    it('別の選択肢の番号や文字は false', () => {
+      expect(checkAnswer(answer, '0')).toBe(false);
+      expect(checkAnswer(answer, '答え')).toBe(false);
+    });
+  });
 });

@@ -53,6 +53,7 @@ export const linearFunctionTemplate: TemplateGenerator = {
       gradeId: this.gradeId,
       unitId: this.unitId,
       prompt: `${expr} で、x = ${x} のときの y の値は？`,
+      figure: { kind: 'line-graph', params: { slope: a, intercept: b } },
       answer: { format: 'number', value: y },
       hints,
       explanation: `${expr} に x = ${x} を入れると、${a} × (${x})${formatB(b)} = ${y} だよ。`,

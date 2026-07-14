@@ -4,13 +4,21 @@ import type { Unit } from '../../types/unit';
 // Firestore の units コレクションを作ったら、ここは読み込み処理に置き換える。
 //
 // 中身は PLAN 4-1 で決めた単元（2026/07/04 決定）に合わせている。
-//   小6：分数のかけ算・わり算／比・比の利用／円の面積／場合の数・対称な図形
-//   中2：連立方程式／一次関数／式の計算／確率
-// ※小6は「＋1単元」を検討中。決まったらここに1行足す。
+//   小6・中2：文部科学省の学習指導要領にある内容を、問題を作りやすい単元に分けている。
 const SUBJECT_MATH = 'math'; // 算数・数学
+const SUBJECT_ENGLISH = 'english'; // 英語
 
 export const SEED_UNITS: Unit[] = [
   // ---- 小6（算数） ----
+  {
+    id: 'elem6-letter-expression',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: '文字と式',
+    order: 2,
+    icon: '🔤',
+    generatorKey: 'letter-expression',
+  },
   {
     id: 'elem6-fraction-muldiv',
     subjectId: SUBJECT_MATH,
@@ -18,13 +26,14 @@ export const SEED_UNITS: Unit[] = [
     name: '分数のかけ算・わり算',
     order: 1,
     icon: '🍰',
+    generatorKey: 'fraction-muldiv', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'elem6-ratio',
     subjectId: SUBJECT_MATH,
     gradeId: 'g-elem6',
     name: '比・比の利用',
-    order: 2,
+    order: 3,
     icon: '⚖️',
     generatorKey: 'ratio', // この単元はテンプレートで出題できる（タスク2-4）
   },
@@ -33,19 +42,92 @@ export const SEED_UNITS: Unit[] = [
     subjectId: SUBJECT_MATH,
     gradeId: 'g-elem6',
     name: '円の面積',
-    order: 3,
+    order: 6,
     icon: '⭕',
     generatorKey: 'circle-area', // この単元はテンプレートで出題できる（タスク2-3）
   },
   {
-    id: 'elem6-cases-symmetry',
+    id: 'elem6-scale-drawing',
     subjectId: SUBJECT_MATH,
     gradeId: 'g-elem6',
-    name: '場合の数・対称な図形',
+    name: '拡大図と縮図',
     order: 4,
-    icon: '🔷',
+    icon: '🔍',
+    generatorKey: 'scale-drawing',
+  },
+  {
+    id: 'elem6-symmetry',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: '対称な図形',
+    order: 5,
+    icon: '🪞',
+    generatorKey: 'symmetry',
+  },
+  {
+    id: 'elem6-approximate-area',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: 'およその面積',
+    order: 7,
+    icon: '🗺️',
+    generatorKey: 'approximate-area',
+  },
+  {
+    id: 'elem6-solid-volume',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: '角柱・円柱の体積',
+    order: 8,
+    icon: '🧊',
+    generatorKey: 'solid-volume',
+  },
+  {
+    id: 'elem6-proportional-inverse',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: '比例・反比例',
+    order: 9,
+    icon: '↔️',
+    generatorKey: 'proportional-inverse',
+  },
+  {
+    id: 'elem6-data',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: 'データの活用',
+    order: 10,
+    icon: '📊',
+    generatorKey: 'elementary-data',
+  },
+  {
+    id: 'elem6-cases',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-elem6',
+    name: '場合の数',
+    order: 11,
+    icon: '🔢',
+    generatorKey: 'cases',
   },
   // ---- 中2（数学） ----
+  {
+    id: 'jhs2-plane-geometry',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-jhs2',
+    name: '平行線と角・多角形',
+    order: 3,
+    icon: '📐',
+    generatorKey: 'plane-geometry',
+  },
+  {
+    id: 'jhs2-congruence-proof',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-jhs2',
+    name: '合同と証明',
+    order: 4,
+    icon: '📝',
+    generatorKey: 'congruence-proof',
+  },
   {
     id: 'jhs2-simultaneous-eq',
     subjectId: SUBJECT_MATH,
@@ -53,6 +135,7 @@ export const SEED_UNITS: Unit[] = [
     name: '連立方程式',
     order: 1,
     icon: '🧮',
+    generatorKey: 'simultaneous-equation', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'jhs2-linear-function',
@@ -68,16 +151,46 @@ export const SEED_UNITS: Unit[] = [
     subjectId: SUBJECT_MATH,
     gradeId: 'g-jhs2',
     name: '式の計算',
-    order: 3,
+    order: 5,
     icon: '➗',
+    generatorKey: 'expression-calculation', // この単元はテンプレートで出題できる（タスク2-4）
   },
   {
     id: 'jhs2-probability',
     subjectId: SUBJECT_MATH,
     gradeId: 'g-jhs2',
     name: '確率',
-    order: 4,
+    order: 7,
     icon: '🎲',
+    generatorKey: 'probability', // この単元はテンプレートで出題できる（タスク2-4）
+  },
+  {
+    id: 'jhs2-box-plot',
+    subjectId: SUBJECT_MATH,
+    gradeId: 'g-jhs2',
+    name: 'データの分布・箱ひげ図',
+    order: 6,
+    icon: '📦',
+    generatorKey: 'box-plot',
+  },
+  // ---- 中2（英語） ----
+  {
+    id: 'jhs2-english-vocabulary',
+    subjectId: SUBJECT_ENGLISH,
+    gradeId: 'g-jhs2',
+    name: '英単語（意味）',
+    order: 1,
+    icon: '🔤',
+    generatorKey: 'english-vocabulary',
+  },
+  {
+    id: 'jhs2-english-grammar',
+    subjectId: SUBJECT_ENGLISH,
+    gradeId: 'g-jhs2',
+    name: '英文法（文の中で選ぶ）',
+    order: 2,
+    icon: '💬',
+    generatorKey: 'english-grammar',
   },
 ];
 
@@ -87,5 +200,8 @@ export const SEED_UNITS: Unit[] = [
  */
 export function unitsForGrade(gradeId: string | undefined): Unit[] {
   if (!gradeId) return [];
-  return SEED_UNITS.filter((u) => u.gradeId === gradeId).sort((a, b) => a.order - b.order);
+  return SEED_UNITS.filter((u) => u.gradeId === gradeId).sort((a, b) => {
+    const subjectOrder = (subjectId: string) => (subjectId === SUBJECT_ENGLISH ? 0 : 1);
+    return subjectOrder(a.subjectId) - subjectOrder(b.subjectId) || a.order - b.order;
+  });
 }

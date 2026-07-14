@@ -25,6 +25,7 @@ main {
   font-size: 2.5rem;
   font-weight: bold;
   margin: 1.5rem 0;
+  white-space: pre-line;
 }
 
 button {
@@ -156,6 +157,21 @@ button {
   margin: 1.5rem 0;
 }
 
+.subject-section {
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.subject-heading {
+  font-size: 1.1rem;
+  margin: 0 0 0.6rem;
+  color: #234;
+}
+
+.subject-section .unit-grid {
+  margin: 0;
+}
+
 .unit-button {
   display: flex;
   flex-direction: column;
@@ -192,6 +208,62 @@ button {
   margin: 1rem 0;
 }
 
+.problem-figure {
+  width: min(100%, 15rem);
+  margin: 0 auto 1rem;
+}
+
+.problem-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #bcd;
+  background: #fff;
+}
+
+.figure-shape {
+  fill: #eafbf1;
+  stroke: #28734a;
+  stroke-width: 3;
+}
+
+.figure-measure,
+.figure-axis {
+  stroke: #567;
+  stroke-width: 2;
+}
+
+.figure-point {
+  fill: #28734a;
+}
+
+.figure-grid {
+  stroke: #d8e3dc;
+  stroke-width: 1;
+}
+
+.figure-line {
+  stroke: #d55;
+  stroke-width: 3;
+}
+
+.figure-symmetry-axis {
+  stroke: #4a67b3;
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.figure-arrow {
+  fill: none;
+  stroke: #567;
+  stroke-width: 2;
+}
+
+.figure-text {
+  fill: #234;
+  font-size: 12px;
+}
+
 .quiz-input {
   font-size: 1.8rem;
   text-align: center;
@@ -206,6 +278,12 @@ button {
   color: #567;
 }
 
+.quiz-input-hint {
+  margin: -0.4rem 0 0;
+  font-size: 0.9rem;
+  color: #567;
+}
+
 .quiz-buttons {
   display: flex;
   gap: 0.6rem;
@@ -215,6 +293,20 @@ button {
 .quiz-submit {
   font-size: 1.2rem;
   padding: 0.7rem 2rem;
+}
+
+.quiz-choices {
+  display: grid;
+  width: min(100%, 24rem);
+  gap: 0.7rem;
+}
+
+.quiz-choice {
+  min-height: 3.4rem;
+  padding: 0.6rem 1rem;
+  background: #fff;
+  border-color: #4a7;
+  text-align: left;
 }
 
 /* マイナスを入れるための ± ボタン（負の答えがある問題だけ表示） */
@@ -276,6 +368,12 @@ button {
   font-size: 1.2rem;
   padding: 0.7rem 2rem;
   margin-top: 0.5rem;
+}
+
+.quiz-save-error {
+  color: #b42318;
+  font-size: 0.9rem;
+  margin: 12px 0 0;
 }
 
 .quiz-footer {
