@@ -1,5 +1,5 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { getDb, isFirebaseConfigured } from '../../lib/firebase';
+import { getDb, getFirebaseUserId, isFirebaseConfigured } from '../../lib/firebase';
 import type { AttemptSaveResult, LearningAttempt } from '../../types/attempt';
 
 /**
@@ -10,8 +10,10 @@ export async function saveAttempt(attempt: LearningAttempt): Promise<AttemptSave
   if (!isFirebaseConfigured()) return 'skipped';
 
   try {
+    const ownerUid = await getFirebaseUserId();
     await addDoc(collection(getDb(), 'attempts'), {
       ...attempt,
+      ownerUid,
       answeredAt: serverTimestamp(),
     });
     return 'saved';

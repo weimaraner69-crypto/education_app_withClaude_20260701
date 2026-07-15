@@ -5,6 +5,7 @@
 // 接続設定が未入力の開発中でも画面を使えるよう、初期化は「呼ばれたとき」だけ行う
 // （getDb() を呼ぶまで接続しない）。
 import { initializeApp, type FirebaseApp } from 'firebase/app';
+import type { Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -18,18 +19,46 @@ const firebaseConfig = {
 
 let app: FirebaseApp | undefined;
 let db: Firestore | undefined;
+let auth: Auth | undefined;
+let anonymousUserIdPromise: Promise<string> | undefined;
 
 /** Firebase の設定値がすべて入力されているかを調べる。 */
 export function isFirebaseConfigured(): boolean {
   return Object.values(firebaseConfig).every(Boolean);
 }
 
-/** Firestore（保管庫）への接続を返す。初回だけ初期化する。 */
-export function getDb(): Firestore {
+/** Firebase アプリを返す。Firestore と Authentication で同じ接続設定を使う。 */
+function getApp(): FirebaseApp {
   if (!isFirebaseConfigured()) {
     throw new Error('Firebase の接続設定が未入力です。');
   }
   app ??= initializeApp(firebaseConfig);
-  db ??= getFirestore(app);
+  return app;
+}
+
+/** Firestore（保管庫）への接続を返す。初回だけ初期化する。 */
+export function getDb(): Firestore {
+  db ??= getFirestore(getApp());
   return db;
+}
+
+/**
+ * 解答記録の所有者を示す Firebase Authentication の利用者IDを返す。
+ * 子供の名前選択だけではFirestoreの安全ルールで本人確認できないため、最初の保存時に
+ * 端末ごとの匿名アカウントを作る。失敗時は次回の保存で再試行できるようにする。
+ */
+export async function getFirebaseUserId(): Promise<string> {
+  // 認証は学習記録を保存するときだけ必要なので、最初の問題画面を軽く保つために遅れて読み込む。
+  const { getAuth, signInAnonymously } = await import('firebase/auth');
+  auth ??= getAuth(getApp());
+  if (auth.currentUser) return Promise.resolve(auth.currentUser.uid);
+
+  anonymousUserIdPromise ??= signInAnonymously(auth)
+    .then((credential) => credential.user.uid)
+    .catch((error: unknown) => {
+      anonymousUserIdPromise = undefined;
+      throw error;
+    });
+
+  return anonymousUserIdPromise;
 }
