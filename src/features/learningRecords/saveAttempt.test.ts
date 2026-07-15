@@ -7,6 +7,7 @@ const firestoreMocks = vi.hoisted(() => ({
 }));
 const firebaseMocks = vi.hoisted(() => ({
   getDb: vi.fn(),
+  getFirebaseUserId: vi.fn(),
   isFirebaseConfigured: vi.fn(),
 }));
 
@@ -30,6 +31,7 @@ describe('saveAttempt', () => {
   beforeEach(() => {
     vi.resetAllMocks();
     firebaseMocks.getDb.mockReturnValue({});
+    firebaseMocks.getFirebaseUserId.mockResolvedValue('anonymous-user-id');
     firestoreMocks.collection.mockReturnValue({});
     firestoreMocks.serverTimestamp.mockReturnValue('server-time');
   });
@@ -48,8 +50,20 @@ describe('saveAttempt', () => {
     await expect(saveAttempt(attempt)).resolves.toBe('saved');
     expect(firestoreMocks.addDoc).toHaveBeenCalledWith(
       {},
-      expect.objectContaining({ ...attempt, answeredAt: 'server-time' }),
+      expect.objectContaining({
+        ...attempt,
+        ownerUid: 'anonymous-user-id',
+        answeredAt: 'server-time',
+      }),
     );
+  });
+
+  it('匿名認証に失敗しても failed を返す', async () => {
+    firebaseMocks.isFirebaseConfigured.mockReturnValue(true);
+    firebaseMocks.getFirebaseUserId.mockRejectedValue(new Error('authentication error'));
+
+    await expect(saveAttempt(attempt)).resolves.toBe('failed');
+    expect(firestoreMocks.addDoc).not.toHaveBeenCalled();
   });
 
   it('保存に失敗しても failed を返す', async () => {
